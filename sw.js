@@ -1,7 +1,7 @@
 // Service worker – deixa o site abrir e funcionar 100% offline após a 1ª visita.
-var V = 'jmsm-v6';
+var V = 'jmsm-v7';
 var ARQ = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
-  'img/logo.png', 'img/tuba.png', 'img/salmao.jpg', 'img/tilapia.jpg', 'img/camarao.jpg', 'img/mexilhao.jpg', 'img/lula.jpg',
+  'img/logo.png', 'img/tuba.png', 'img/supermix.png', 'img/salmao.jpg', 'img/tilapia.jpg', 'img/camarao.jpg', 'img/mexilhao.jpg', 'img/lula.jpg',
   'img/caneta.jpg', 'img/sacola.jpg', 'img/copo.jpg', 'img/chaveiro.jpg'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(ARQ); }).then(function () { return self.skipWaiting(); }));
