@@ -81,7 +81,7 @@ form{width:min(94vw,820px);display:flex;flex-direction:column;gap:1.6vmin;backgr
 /* roleta */
 #s-roleta{justify-content:center;gap:2vmin}
 #s-roleta h1{margin:0;font-size:max(5vmin,28px);text-align:center;color:var(--gold2);text-shadow:0 .4vmin 0 #000}
-#s-roleta .sub{font-size:max(2.5vmin,16px);font-weight:700;text-align:center}
+#s-roleta .sub{margin-bottom:4vmin;font-size:max(2.5vmin,16px);font-weight:700;text-align:center}
 .wheelBox{position:relative;width:min(78vmin,640px);aspect-ratio:1}
 .wheelBox canvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 1.2vmin var(--gold),0 0 0 2vmin var(--navy2),0 2vmin 5vmin rgba(0,0,0,.6);transition:transform 6s cubic-bezier(.12,.7,.1,1)}
 .pointer{position:absolute;left:50%;top:-3.2vmin;translate:-50% 0;width:0;height:0;border:3.4vmin solid transparent;border-top:6.4vmin solid var(--gold2);border-bottom:0;filter:drop-shadow(0 .5vmin .5vmin rgba(0,0,0,.6));z-index:3}
@@ -93,7 +93,7 @@ form{width:min(94vw,820px);display:flex;flex-direction:column;gap:1.6vmin;backgr
 #admin .box{text-align:left;align-items:stretch;font-size:max(2vmin,14px)}
 #admin h2{text-align:center}
 #admin input{font-size:max(2vmin,14px);padding:1vmin 1.4vmin;border-radius:1vmin;border:2px solid #9bb0e0;width:100%;user-select:text;-webkit-user-select:text}
-#admin .stk{display:grid;grid-template-columns:repeat(4,1fr);gap:1vmin}
+#admin .stk{display:grid;grid-template-columns:repeat(auto-fit,minmax(18%,1fr));gap:1vmin}
 #admin .stk div{background:#fff;border:2px solid var(--gold);border-radius:1vmin;padding:1vmin;text-align:center;font-weight:800}
 #admin .stk input{text-align:center;margin-top:.5vmin}
 #admin .btn{font-size:max(1.8vmin,13px);padding:1.4vmin 2.6vmin}
@@ -197,9 +197,9 @@ var CFG={
   IDLE_MS:120000,         // inatividade para voltar ao início
   SYNC_URL:'https://script.google.com/macros/s/AKfycbwLsHUBuqYXQrXBMzE9eH94pA_4kcAuIv5C9SSU_qrB4NilzG8Fl8RFvCLnbNq3R5yfmg/exec'   // URL do Apps Script (planilha Jogo da Memória Feira Super Mix)
 };
-var IMG={logo:"img/logo.png",tuba:"img/tuba.png",salmao:"img/salmao.jpg",tilapia:"img/tilapia.jpg",camarao:"img/camarao.jpg",mexilhao:"img/mexilhao.jpg",lula:"img/lula.jpg",caneta:"img/caneta.jpg",sacola:"img/sacola.jpg",copo:"img/copo.jpg",chaveiro:"img/chaveiro.jpg"};
+var IMG={logo:"img/logo.png",tuba:"img/tuba.png",salmao:"img/salmao.jpg",tilapia:"img/tilapia.jpg",camarao:"img/camarao.jpg",mexilhao:"img/mexilhao.jpg",lula:"img/lula.jpg",caneta:"img/caneta.jpg",sacola:"img/sacola.jpg",chaveiro:"img/chaveiro.jpg"};
 var CARTAS=[{id:'salmao',nome:'Salmão'},{id:'tilapia',nome:'Tilápia'},{id:'camarao',nome:'Camarão'},{id:'mexilhao',nome:'Mexilhão'},{id:'lula',nome:'Lula em anéis'},{id:'logo',nome:'Tudo do Mar'}];
-var BRINDES=[{id:'caneta',nome:'Caneta',cor:'#0a2a66'},{id:'sacola',nome:'Sacola',cor:'#d4a537'},{id:'copo',nome:'Copo',cor:'#12388a'},{id:'chaveiro',nome:'Chaveiro',cor:'#f3d98b'}];
+var BRINDES=[{id:'caneta',nome:'Caneta',cor:'#0a2a66'},{id:'sacola',nome:'Sacola',cor:'#d4a537'},{id:'chaveiro',nome:'Chaveiro',cor:'#f3d98b'}];
 
 /* ============ ARMAZENAMENTO LOCAL (offline) ============ */
 var P='jmsm_';
@@ -317,7 +317,7 @@ function drawWheel(){
     var s=-Math.PI/2+i*a-a/2+a/2*0; // segmento i centrado em (i+.5)*a a partir do topo
     var st=-Math.PI/2+i*a,en=st+a;
     x.beginPath();x.moveTo(R,R);x.arc(R,R,R,st,en);x.closePath();
-    x.fillStyle=(i%2===0)?'#0a2a66':'#12388a';x.fill();
+    x.fillStyle=['#0a2a66','#12388a','#1b4aa8','#0d3275'][i%4];x.fill();
     x.lineWidth=8;x.strokeStyle='#d4a537';x.stroke();
     x.save();x.translate(R,R);x.rotate(st+a/2);
     var im=imgs[b.id];
