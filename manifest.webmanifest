@@ -1,0 +1,24 @@
+{
+ "name": "Jogo da Memória – Tudo do Mar",
+ "short_name": "Jogo Tudo do Mar",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "fullscreen",
+ "orientation": "any",
+ "background_color": "#061a42",
+ "theme_color": "#061a42",
+ "lang": "pt-BR",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
