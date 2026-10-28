@@ -159,6 +159,12 @@ form{width:min(94vw,820px);display:flex;flex-direction:column;gap:1.6vmin;backgr
   <button class="btn" id="btnNext2">Próximo participante</button>
 </div></div>
 
+<div class="modal" id="mPin"><div class="box">
+  <h2>Painel da equipe</h2><p>Digite o PIN</p>
+  <input id="pinIn" type="password" inputmode="numeric" autocomplete="off" style="font-size:max(4vmin,24px);text-align:center;padding:1.5vmin;border-radius:2vmin;border:3px solid var(--gold);width:60%;user-select:text;-webkit-user-select:text">
+  <div id="pinMsg" style="color:#c00;font-weight:800;min-height:3vmin"></div>
+  <div class="row"><button class="btn" id="pinOk">Entrar</button><button class="btn sec" id="pinNo">Cancelar</button></div>
+</div></div>
 <!-- ADMIN -->
 <div class="modal" id="admin"><div class="box">
   <h2>Painel da equipe</h2>
@@ -188,7 +194,7 @@ var CFG={
   ESTOQUE_INICIAL:80,     // por brinde
   PIN:'2026',             // PIN do painel da equipe (toque 5x na logo)
   IDLE_MS:120000,         // inatividade para voltar ao início
-  SYNC_URL:''             // opcional: cole aqui a URL do Apps Script (ou configure no painel)
+  SYNC_URL:'https://script.google.com/macros/s/AKfycbwLsHUBuqYXQrXBMzE9eH94pA_4kcAuIv5C9SSU_qrB4NilzG8Fl8RFvCLnbNq3R5yfmg/exec'   // URL do Apps Script (planilha Jogo da Memória Feira Super Mix)
 };
 var IMG={logo:"img/logo.png",tuba:"img/tuba.png",salmao:"img/salmao.jpg",tilapia:"img/tilapia.jpg",camarao:"img/camarao.jpg",mexilhao:"img/mexilhao.jpg",lula:"img/lula.jpg",caneta:"img/caneta.jpg",sacola:"img/sacola.jpg",copo:"img/copo.jpg",chaveiro:"img/chaveiro.jpg"};
 var CARTAS=[{id:'salmao',nome:'Salmão'},{id:'tilapia',nome:'Tilápia'},{id:'camarao',nome:'Camarão'},{id:'mexilhao',nome:'Mexilhão'},{id:'lula',nome:'Lula em anéis'},{id:'logo',nome:'Tudo do Mar'}];
@@ -203,6 +209,7 @@ var stock=ld('stock',null);
 if(!stock){stock={};BRINDES.forEach(function(b){stock[b.id]=CFG.ESTOQUE_INICIAL});sv('stock',stock)}
 var known=ld('known',{e:[],p:[]});   // hashes de cadastros já existentes na planilha
 var settings=ld('settings',{url:CFG.SYNC_URL,totem:'Totem 1'});
+if(!settings.url){settings.url=CFG.SYNC_URL;sv('settings',settings)}
 var logs=[];
 function log(m){logs.unshift(new Date().toLocaleTimeString('pt-BR')+' '+m);logs=logs.slice(0,30)}
 function $(i){return document.getElementById(i)}
@@ -377,12 +384,13 @@ function idleReset(){clearTimeout(idleT);idleT=setTimeout(function(){
   if($('s-game').classList.contains('on')&&atual&&G&&!G.fim){marcar(atual,{resultado:'abandonou',erros:G.erros});novo()}},CFG.IDLE_MS)}
 
 /* ============ SINCRONIZAÇÃO COM GOOGLE SHEETS ============ */
-var syncing=false;
+var syncing=false,again=false;
 function pendentes(){var a=[];for(var id in leads){var l=leads[id];if((l.synced||0)<l.v)a.push(l)}return a}
 function trySync(){setTimeout(sync,300)}
 function sync(){
   updDot();
-  if(syncing||!navigator.onLine||!settings.url)return Promise.resolve();
+  if(syncing){again=true;return Promise.resolve()}
+  if(!navigator.onLine||!settings.url)return Promise.resolve();
   syncing=true;
   var pend=pendentes(),env=pend.map(function(l){return {id:l.id,criadoEm:l.criadoEm,nome:l.nome,telefone:l.telefone,email:l.email,empresa:l.empresa,resultado:l.resultado,brinde:l.brinde,tentativas:l.tentativas,erros:l.erros,v:l.v,duplicado:0}});
   return fetch(settings.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'sync',totem:settings.totem,leads:env}),redirect:'follow'})
@@ -396,7 +404,7 @@ function sync(){
      log('Sync OK: '+env.length+' registro(s) enviados');
    })
    .catch(function(e){log('Sync falhou (tentará de novo): '+e.message)})
-   .then(function(){syncing=false;updDot();renderAdmin()})}
+   .then(function(){syncing=false;updDot();renderAdmin();if(again){again=false;setTimeout(sync,300)}})}
 function updDot(){var d=$('dot'),n=pendentes().length;d.className=navigator.onLine&&!n?'':'off';d.title=(navigator.onLine?'online':'offline')+' · pendentes: '+n}
 window.addEventListener('online',function(){log('Conexão restabelecida');sync()});
 window.addEventListener('offline',function(){updDot()});
@@ -407,7 +415,10 @@ setTimeout(sync,1500);updDot();
 var taps=0,tapT=null;
 $('logoTap').addEventListener('click',function(){
   taps++;clearTimeout(tapT);tapT=setTimeout(function(){taps=0},3000);
-  if(taps>=5){taps=0;var p=prompt('PIN da equipe:');if(p===CFG.PIN){renderAdmin();modal('admin',true)}}});
+  if(taps>=5){taps=0;$('pinIn').value='';$('pinMsg').textContent='';modal('mPin',true);setTimeout(function(){$('pinIn').focus()},100)}});
+function pinGo(){if($('pinIn').value===CFG.PIN){modal('mPin',false);renderAdmin();modal('admin',true)}else{$('pinMsg').textContent='PIN incorreto';$('pinIn').value=''}}
+$('pinOk').onclick=pinGo;$('pinNo').onclick=function(){modal('mPin',false)};
+$('pinIn').addEventListener('keydown',function(e){if(e.key==='Enter')pinGo()});
 function renderAdmin(){
   if(!$('admin').classList.contains('on')&&arguments.length===0&&false)return;
   var tot=Object.keys(leads).length,pend=pendentes().length;
