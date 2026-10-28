@@ -1,5 +1,5 @@
 // Service worker – deixa o site abrir e funcionar 100% offline após a 1ª visita.
-var V = 'jmsm-v12';
+var V = 'jmsm-v13';
 var ARQ = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'img/logo.png', 'img/tuba.png', 'img/supermix.png', 'img/fundo.jpg', 'img/salmao.jpg', 'img/tilapia.jpg', 'img/camarao.jpg', 'img/mexilhao.jpg', 'img/lula.jpg',
   'img/caneta.jpg', 'img/sacola.jpg', 'img/chaveiro.jpg'];
